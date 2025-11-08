@@ -15,22 +15,22 @@ import {MdCheckCircle} from "react-icons/md";
 interface ProductDetailsProps{
     product:any;
 }
-export type CartProduct={
-    id:product.,
-    name:product.,
-    description:product.,
-    category:product.,
-    brand:product.,
-    selectedImg:selectedImgType,
-    quantity:number,
-    price:number
-}
-export type selectedImgType ={
-    color:product.,
-    colorCode:product.,
-    image:product.
+export type CartProductType = {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  brand: string;
+  selectedImg: selectedImgType;
+  quantity: number;
+  price: number;
+};
 
-}
+export type selectedImgType = {
+  color: string;
+  colorCode: string;
+  image: string;
+};
 const Horizontal =() =>{
     return <hr className="w-[30%] my-2" />;
 }
