@@ -1,4 +1,4 @@
-
+import AdminNav from "../components/admin/AdminNav"
 export const metadata = {
     title:"E~Shopt Admin",
     description:"E~Shop Admin Dashboard",
@@ -7,7 +7,7 @@ export const metadata = {
 const AdminLayout = ({children} : {children:React.ReactNode}) =>{
     return (
     <div>
-        <div>Nav</div>
+        <AdminNav />
         {children}
     </div>
 
