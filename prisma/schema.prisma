@@ -90,11 +90,14 @@ type CartProductType{
   quantity Int
   price Float
 }
-type Image{
-  color String
+
+type Image {
+  color     String
   colorCode String
-  image String
+  image     String
+  public_id String?  // ✅ add this field
 }
+
 
 type Address{
   city String

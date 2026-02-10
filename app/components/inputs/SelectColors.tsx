@@ -1,14 +1,20 @@
 'use client'
+import { useState, useEffect, useCallback } from "react";
 import {ImageType} from "@/app/admin/add-products/AddProductForm";
+import SelectImage  from "./SelectImage"
+import Button from "@/app/components/Button";
+
+
+
 
 interface SelectColorProps{
     item:ImageType;
-    addImageToState:(value : ImageType)= void;
+    addImageToState:(value : ImageType) => void;
     removeImageFromState:(value:ImageType) => void;
     isProductCreated:boolean;
 }
 
-const SelectColor:React.FC<SelectColorProps> = ({item, addImageToState. removeImageFromState, isProductCreated}) =>{
+const SelectColor:React.FC<SelectColorProps> = ({item, addImageToState, removeImageFromState, isProductCreated}) =>{
   
     const [isSelected, setIsSelected]= useState(false);
     const [file, setFile] = useState<File | null>(null);
@@ -22,7 +28,7 @@ const SelectColor:React.FC<SelectColorProps> = ({item, addImageToState. removeIm
 
     const handleFileChange = useCallback((value:File) =>{
         setFile(value)
-        addImageToState({...item,image:value});
+        addImageToState({...item, image:value});
     },[]);
 
    const handleCheck = useCallback((e:React.ChangeEvent<HTMLInputElement>) =>{
@@ -30,7 +36,7 @@ const SelectColor:React.FC<SelectColorProps> = ({item, addImageToState. removeIm
 
     if(!e.target.checked){
         setFile(null);
-        removedImageFromState(item)
+        removeImageFromState(item)
     }
    },[]);
 

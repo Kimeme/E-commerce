@@ -8,10 +8,6 @@ import ProductImage from "@/app/components/products/ProductImage"
 import { useRouter } from "next/navigation";
 import {useCart} from "@/hooks/useCart";
 import {MdCheckCircle} from "react-icons/md";
-
-
-
-
 interface ProductDetailsProps{
     product:any;
 }
@@ -21,12 +17,12 @@ export type CartProductType = {
   description: string;
   category: string;
   brand: string;
-  selectedImg: selectedImgType;
+  selectedImg: SelectedImgType;
   quantity: number;
   price: number;
 };
 
-export type selectedImgType = {
+export type SelectedImgType = {
   color: string;
   colorCode: string;
   image: string;
@@ -68,7 +64,7 @@ useEffect(() =>{
 
         const productRating = product.reviews.reduce((acc:number, item:any) => item.rating + acc, 0)/ product.reviews.length;
 
-        const handleColorSelect = useCallback((value:selectedImgType) => {
+        const handleColorSelect = useCallback((value:SelectedImgType) => {
             setCartProduct((prev) => {
                 return { ...prev, selectedImg:value}
             })
@@ -85,16 +81,22 @@ useEffect(() =>{
             
         }, [cartProduct]);
 
+            const handleQtyDecrease = useCallback(() => {
+                 setCartProduct((prev) => {
+                      if (prev.quantity === 1) return prev; // ✅ keep state unchanged if 1
+                   return { ...prev, quantity: prev.quantity - 1 };
+                      });
+                   }, []); // ✅ no dependency needed
 
-           const handleQtyDecrease = useCallback(() => {
-            setCartProduct((prev) => {
-                if(cartProduct.quantity ===1){
-                    return;
-                }
-                return { ...prev, quantity: prev.quantity -1};
-            });
+        //    const handleQtyDecrease = useCallback(() => {
+        //     setCartProduct((prev) => {
+        //         if(cartProduct.quantity ===1){
+        //             return;
+        //         }
+        //         return { ...prev, quantity: prev.quantity -1};
+        //     });
             
-        }, [cartProduct]);
+        // }, [cartProduct]);
     return <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
         <div>
             <ProductImage 
