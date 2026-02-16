@@ -4,8 +4,6 @@ import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FieldValues, useForm, SubmitHandler } from "react-hook-form";
 import toast from "react-hot-toast";
-import axios from "axios";
-
 import Button from "@/app/components/Button";
 import Heading from "@/app/components/Heading";
 import CategoryInput from "@/app/components/inputs/CategoryInput";
@@ -23,11 +21,11 @@ export type ImageType = {
   image: File | null;
 };
 
-export type UploadedImageType = { 
+export type UploadedImageType = {
   color: string;
   colorCode: string;
   image: string; // Cloudinary URL
-  public_id?: string | null; // optional because sometimes you might not have it
+  public_id: string | null;
 };
 
 const AddProductForm = () => {
@@ -81,42 +79,39 @@ const AddProductForm = () => {
     }
   }, [isProductCreated, reset]);
 
-  // Upload images to Cloudinary
-  const handleImageUploads = async (dataImages: ImageType[]) => {
-  const uploadedImages: UploadedImageType[] = [];
+  // Upload images to Cloudinary and capture public_id
+  const handleImageUploads = async (dataImages: ImageType[]): Promise<UploadedImageType[]> => {
+    const uploadedImages: UploadedImageType[] = [];
 
-  for (const item of dataImages) {
-    if (!item.image) continue; // skip if no file
+    for (const item of dataImages) {
+      if (!item.image) continue;
 
-    const formData = new FormData();
-    formData.append("file", item.image);
+      const formData = new FormData();
+      formData.append("file", item.image);
 
-    try {
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
+      try {
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+        const result = await res.json();
 
-      const result = await res.json();
+        if (!res.ok || !result.url) throw new Error(result.message || "Upload failed");
 
-      if (!res.ok || !result.url) {
-        console.error("Cloudinary upload failed", result);
-        throw new Error(result.message || "Upload failed");
+        uploadedImages.push({
+          color: item.color,
+          colorCode: item.colorCode,
+          image: result.url,
+          public_id: result.public_id || null, // ✅ capture Cloudinary public_id
+        });
+      } catch (err) {
+        console.error("Error uploading image:", err);
+        throw new Error("Error uploading images to Cloudinary");
       }
-
-      uploadedImages.push({
-        ...item,
-        image: result.url,
-      });
-    } catch (err) {
-      console.error("Error uploading image:", err);
-      throw new Error("Error uploading images to Cloudinary");
     }
-  }
 
-  return uploadedImages;
-};
-
+    return uploadedImages;
+  };
 
   // Handle form submission
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
@@ -126,10 +121,21 @@ const AddProductForm = () => {
     setIsLoading(true);
 
     try {
+      // 1️⃣ Upload images to Cloudinary
       const uploadedImages = await handleImageUploads(data.images);
-      const productData = { ...data, images: uploadedImages };
 
-      await axios.post('/api/product', productData);
+      // 2️⃣ Prepare data for backend
+      const productData = { 
+        ...data, 
+        images: uploadedImages 
+      };
+
+      // 3️⃣ Send product to backend
+      await fetch("/api/product", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(productData),
+      });
 
       toast.success("Product created successfully");
       setIsProductCreated(true);
@@ -156,19 +162,15 @@ const AddProductForm = () => {
       <div className="w-full font-medium">
         <div className="mb-2 font-semibold">Select a Category</div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-[50vh] overflow-y-auto">
-          {categories.map((item) => {
-            if (item.label === "All") return null;
-            return (
-              <div key={item.label}>
-                <CategoryInput
-                  onClick={() => setCustomValue("category", item.label)}
-                  selected={category === item.label}
-                  label={item.label}
-                  icon={item.icon}
-                />
-              </div>
-            );
-          })}
+          {categories.map((item) => item.label !== "All" && (
+            <CategoryInput
+              key={item.label}
+              onClick={() => setCustomValue("category", item.label)}
+              selected={category === item.label}
+              label={item.label}
+              icon={item.icon}
+            />
+          ))}
         </div>
       </div>
 
