@@ -4,9 +4,7 @@ import { NextResponse } from "next/server";
 import { CartProductType } from "@/app/product/[productId]/ProductDetails";
 import { getCurrentUser } from "@/actions/getCurrentUser";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: "2022-11-15",
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 const calculateOrderAmount = (items: CartProductType[]) => {
   const totalPrice = items.reduce((acc, item) => {
