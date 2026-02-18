@@ -10,7 +10,7 @@ type CartContextType= {
     handleRemoveProductFromCart: (product:CartProductType) =>void
     handleCartQtyIncrease: (product:CartProductType) =>void
     handleCartQtyDecrease: (product:CartProductType) =>void
-    handleClearCart: (product:CartProductType) =>void
+    handleClearCart: () =>void
     paymentIntent:string | null;
     handleSetPaymentIntent:(val : string | null) =>void;
 
@@ -31,12 +31,7 @@ export const CartContextProvider = (props:Props) => {
  
     // console.log('qty', cartTotalQty)
     // console.log('amount', cartTotalAmount)
-    
-    useEffect(() => {
-const cartItems:any = localStorage.getItem('eShopCartItems')
-const cProducts: CartProductTypo[] | null = JSON.parse(cartItems)
-setCartProducts(cProducts)
-    }, []);
+
 useEffect(() => {
     const cartItems: any = localStorage.getItem("eShopCartItems");
     const cProducts: CartProductType[] | null = JSON.parse(cartItems);
@@ -76,10 +71,11 @@ useEffect(() => {
             updatedCart=[product];
 
         }
-        toast.success("Product added to cart");
+        
         localStorage.setItem('eShopCartItems', JSON.stringify(updatedCart))
         return updatedCart;
     });
+    toast.success("Product added to cart");
       }, []);
 
       const handleRemoveProductFromCart = useCallback((product:CartProductType) =>{

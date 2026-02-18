@@ -24,24 +24,3 @@ const Order = async ({ params }: { params: IParams }) => {
 };
 
 export default Order;
-
-// import  OrderDetails from "./OrderDetails";
-// import  Container from "@/app/components/Container";
-// import getOrderById from "@/actions/getOrderById";
-
-// interface IParams {
-//   orderId?: string;
-// }
-
-// const Order = async({ params }: { params: IParams }) => {
-//     const order = await getOrderById(params.orderId)
-//   return (
-//     <div className="p-8">
-//      <Container>
-//       <OrderDetails order={order} />
-//      </Container>
-//     </div>
-//   );
-// };
-
-// export default Order;

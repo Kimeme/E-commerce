@@ -34,7 +34,7 @@ const ManageProductsClient: React.FC<ManageProductsClientProps> = ({ products })
     category: product.category,
     brand: product.brand,
     inStock: product.inStock,
-    images: product.image,
+    images: product.images,
       }
   });
 }

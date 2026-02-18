@@ -50,48 +50,4 @@ export default async function RootLayout({
 }
 
 
-// // app/layout.tsx
-// import type { Metadata } from "next";
-// import { Poppins } from "next/font/google";
-// import "./globals.css";
-// import NavBar from "./components/nav/NavBar";
-// import Footer from "./components/footer/Footer";
-// import CartProvider from "@/providers/CartProvider";
-// import ToasterClient from "./components/ToasterClient"; 
-// import { getCurrentUser } from "./app/actions/getCurrentUser";
-
-
-// const poppins = Poppins({
-//   subsets: ["latin"],
-//   weight: ["400", "700"],
-//   display: "swap",
-// });
-
-// export const metadata: Metadata = {
-//   title: "E-Shop",
-//   description: "Ecommerce app",
-// };
-
-// export default function RootLayout({
-//   children,
-// }: Readonly<{
-//   children: React.ReactNode;
-// }>) {
-//   const currentUser = await getCurrentUser();
-// console.log("user<<<", currentUser);
-//   return (
-//     <html lang="en">
-//       <body className={`${poppins.className} text-slate-700`}>
-//         <ToasterClient />
-//         <CartProvider>
-//           <div className="flex flex-col min-h-screen ">
-//             <NavBar />
-//             <main className="flex-grow">{children}</main>
-//             <Footer />
-//           </div>
-//         </CartProvider>
-//       </body>
-//     </html>
-//   );
-// }
 

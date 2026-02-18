@@ -1,33 +1,25 @@
-import prisma from '@/libs/prismadb'
-interface IParams{
-    productId?:string
-}
+import prisma from "@/libs/prismadb";
 
-export default async function getProductById(params:IParams) {
-    try{
-        const {productId} = params;
-        const product = await prisma.product.findUnique({
-            where:{
-                id:productId
-            },
-            include:{
-                reviews:{
-                    include:{
-                        user:true
-                    },
-                    orderBy:{
-                        createdDate:'desc'
-                    }
-                }
-            }
-        })
-        if(!product){
-            return null;
-        }
-        return product;
+export default async function getProductById(productId?: string) {
+  try {
+    if (!productId) return null;
 
-    } catch (error:any){
-        throw new Error(error)
-    }
-    
+    const product = await prisma.product.findUnique({
+      where: {
+        id: productId,
+      },
+      include: {
+        reviews: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
+
+    return product;
+  } catch (error) {
+    console.log("GetProductById error:", error);
+    return null;
+  }
 }

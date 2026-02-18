@@ -1,5 +1,4 @@
-"use client";
-
+'use client';
 import { useCart } from "@/hooks/useCart";
 import { useStripe, useElements, PaymentElement, AddressElement } from "@stripe/react-stripe-js";
 import { formatPrice } from "@/utils/formatPrice";
@@ -27,12 +26,8 @@ const CheckoutForm = ({ clientSecret, handleSetPaymentSuccess }: CheckoutFormPro
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!stripe || !elements) {
-      toast.error("Stripe is not ready yet");
-      return;
-    }
-
+    if (!stripe || !elements) return toast.error("Stripe is not ready yet");
+    if (isLoading) return; // 🔹 prevent double submission
     setIsLoading(true);
 
     try {
@@ -71,10 +66,13 @@ const CheckoutForm = ({ clientSecret, handleSetPaymentSuccess }: CheckoutFormPro
 
       <div className="py-4 text-center text-slate-700 text-xl font-bold">Total: {formattedPrice}</div>
 
-      <Button type="submit" label={isLoading ? "Processing..." : "Pay now"} disabled={isLoading || !stripe || !elements} />
+      <Button
+        type="submit"
+        label={isLoading ? "Processing..." : "Pay now"}
+        disabled={isLoading || !stripe || !elements}
+      />
     </form>
   );
 };
 
 export default CheckoutForm;
-

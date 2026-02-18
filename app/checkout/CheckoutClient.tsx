@@ -1,10 +1,10 @@
 "use client";
 
 import { useCart } from "@/hooks/useCart";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { loadStripe } from "@stripe/stripe-js";
+import { loadStripe, StripeElementsOptions } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import CheckoutForm from "./CheckoutForm";
 import Button from "../components/Button";
@@ -20,40 +20,44 @@ const CheckoutClient = () => {
   const router = useRouter();
 
   // Create or update payment intent
-  useEffect(() => {
-    if (!cartProducts || cartProducts.length === 0) return;
+  const hasFetchedPaymentIntent = useRef(false);
 
-    setLoading(true);
-    setError(false);
+useEffect(() => {
+  if (hasFetchedPaymentIntent.current) return;
+  if (!cartProducts || cartProducts.length === 0) return;
 
-    fetch("/api/create-payment-intent", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        items: cartProducts,
-        payment_intent_id: paymentIntent,
-      }),
+  hasFetchedPaymentIntent.current = true; // ✅ mark as fetched
+  setLoading(true);
+  setError(false);
+
+  fetch("/api/create-payment-intent", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      items: cartProducts,
+      payment_intent_id: paymentIntent,
+    }),
+  })
+    .then(async (res) => {
+      setLoading(false);
+      if (res.status === 401) return router.push("/login");
+      return res.json();
     })
-      .then(async (res) => {
-        setLoading(false);
-        if (res.status === 401) return router.push("/login");
-        return res.json();
-      })
-      .then((data) => {
-        if (data.error) {
-          setError(true);
-          toast.error("Something went wrong: " + data.error);
-        } else {
-          setClientSecret(data.paymentIntent.client_secret);
-          handleSetPaymentIntent(data.paymentIntent.id);
-        }
-      })
-      .catch((err) => {
+    .then((data) => {
+      if (data.error) {
         setError(true);
-        console.error("Error:", err);
-        toast.error("Something went wrong");
-      });
-  }, [cartProducts, paymentIntent, handleSetPaymentIntent, router]);
+        toast.error("Something went wrong: " + data.error);
+      } else {
+        setClientSecret(data.paymentIntent.client_secret);
+        handleSetPaymentIntent(data.paymentIntent.id);
+      }
+    })
+    .catch((err) => {
+      setError(true);
+      console.error("Error:", err);
+      toast.error("Something went wrong");
+    });
+}, [cartProducts, paymentIntent, handleSetPaymentIntent, router]);
 
   const options: StripeElementsOptions = {
     clientSecret,
