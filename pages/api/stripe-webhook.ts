@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import Stripe from "stripe";
+import Stripe from "stripe"; // ✅ correct
+
 import { buffer } from "micro";
 import prisma from "@/libs/prismadb";
 
@@ -11,7 +12,7 @@ export const config = {
 }
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-    apiVersion: '2022-11-15'
+
 })
 
 export default async function handler(
@@ -27,7 +28,7 @@ export default async function handler(
     let event: Stripe.Event;
 
     try{
-        event = Stripe.webhooks.constructEvent(
+        event = stripe.webhooks.constructEvent(
             buf, sig, process.env.STRIPE_WEBHOOK_SECRET!
         );
 
