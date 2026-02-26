@@ -9,6 +9,7 @@ import { AiOutlineGoogle } from "react-icons/ai";
 import {signIn} from "next-auth/react"
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
+import { SafeUser } from "@/types";
 
 
 interface LoginFormProps{
