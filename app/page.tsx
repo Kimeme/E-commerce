@@ -7,8 +7,9 @@ import getProducts, { IProductParams } from "@/actions/getProducts";
 import NullData from "./components/NullData";
 
 interface HomeProps {
-  searchParams: Promise<{ searchTerm?: string }>;
+  searchParams: IProductParams; // should match the type expected by getProducts
 }
+
 
 export default async function Home({searchParams}: HomeProps) {
   const products = await getProducts(searchParams)
