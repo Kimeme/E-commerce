@@ -10,7 +10,6 @@ import { MdDone, MdClose, MdCached, MdDelete, MdRemoveRedEye } from "react-icons
 import axios from "axios";
 import toast from "react-hot-toast";
 import { formatPrice } from "@/utils/formatPrice";
-import firebaseApp from "@/libs/firebase";
 import cloudinary from "@/libs/cloudinary";
 
 interface ManageProductsClientProps {
